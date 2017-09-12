@@ -1,0 +1,1 @@
+# bean-validator-extension
