@@ -27,7 +27,14 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void no_password() {
+    void valid_password_with_many_spaces_characters() {
+        Foo foo = new Foo("  p  ");
+
+        assertThat(validator.validate(foo)).isEmpty();
+    }
+
+    @Test
+    void null_value_password() {
         Foo foo = new Foo(null);
 
         Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
