@@ -5,18 +5,20 @@ import javax.validation.ConstraintValidatorContext;
 
 public class PasswordValidator implements ConstraintValidator<Password, String> {
 
-    private int minLength;
+    private int min;
+    private int max;
 
     @Override
     public void initialize(Password constraintAnnotation) {
-        minLength = constraintAnnotation.minLength();
+        min = constraintAnnotation.min();
+        max = constraintAnnotation.max();
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        boolean isValid = value != null &&
-                value.trim().length() > 0 &&
-                value.length() >= minLength;
+        boolean isValid = isNotBlank(value) &&
+                value.length() >= min &&
+                value.length() <= max;
 
         if (!isValid) {
             context.disableDefaultConstraintViolation();
@@ -26,5 +28,9 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         }
 
         return isValid;
+    }
+
+    private boolean isNotBlank(String value) {
+        return value != null && value.trim().length() > 0;
     }
 }

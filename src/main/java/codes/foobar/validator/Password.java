@@ -19,5 +19,7 @@ public @interface Password {
 
     Class<? extends Payload>[] payload() default {};
 
-    int minLength() default 10;
+    int min() default 10;
+
+    int max() default 128;
 }

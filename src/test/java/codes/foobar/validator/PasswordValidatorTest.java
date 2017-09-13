@@ -21,14 +21,14 @@ class PasswordValidatorTest {
 
     @Test
     void valid_password() {
-        Foo foo = new Foo("valid_pw");
+        Foo foo = new Foo("passwd");
 
         assertThat(validator.validate(foo)).isEmpty();
     }
 
     @Test
     void valid_password_with_many_spaces_characters() {
-        Foo foo = new Foo("  p  ");
+        Foo foo = new Foo(" p  w ");
 
         assertThat(validator.validate(foo)).isEmpty();
     }
@@ -41,7 +41,7 @@ class PasswordValidatorTest {
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("Password length must be greater than or equal to 4 but was: null");
+                .isEqualTo("Password length must be between 6 and 12 but was: null");
     }
 
     @Test
@@ -52,23 +52,34 @@ class PasswordValidatorTest {
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("Password length must be greater than or equal to 4 but was: 3");
+                .isEqualTo("Password length must be between 6 and 12 but was: 3");
     }
 
     @Test
     void only_spaces_password() {
-        Foo foo = new Foo("    ");
+        Foo foo = new Foo("          ");
 
         Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("Password length must be greater than or equal to 4 but was: 0");
+                .isEqualTo("Password length must be between 6 and 12 but was: 0");
+    }
+
+    @Test
+    void too_long_password() {
+        Foo foo = new Foo("13_chars_pass");
+
+        Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
+
+        assertThat(constraintViolations).hasSize(1);
+        assertThat(constraintViolations.iterator().next().getMessage())
+                .isEqualTo("Password length must be between 6 and 12 but was: 13");
     }
 
     private class Foo {
 
-        @Password(minLength = 4)
+        @Password(min = 6, max = 12)
         private String password;
 
         private Foo(String password) {

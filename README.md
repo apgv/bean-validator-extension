@@ -4,12 +4,13 @@ Password validator with custom validation message hiding the actual password val
 
 ## Usage
 
-Parameter `minLength` is optional. Defaults to 10.
+Parameter `min` is optional. Defaults to 10.
+Parameter `max` is optional. Defaults to 128.
 
 ```java
 public class Foo {
 
-    @Password(minLength = 4)
+    @Password(min = 6, max = 12)
     private String password;
 
     public Foo(String password) {
@@ -19,8 +20,8 @@ public class Foo {
 ```
 ## Example validation error messages
 
-#### Too short password
-Password length must be greater than or equal to 4 but was: 3
+#### Invalid length password
+Password length must be between 6 and 12 but was: 3
 
 #### Password is null
-Password length must be greater than or equal to 4 but was: null
+Password length must be between 6 and 12 but was: null
