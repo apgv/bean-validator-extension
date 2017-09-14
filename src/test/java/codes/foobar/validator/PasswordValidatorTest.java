@@ -20,21 +20,21 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void valid_password() {
+    void valid() {
         Foo foo = new Foo("passwd");
 
         assertThat(validator.validate(foo)).isEmpty();
     }
 
     @Test
-    void valid_password_with_many_spaces_characters() {
+    void valid_with_many_spaces_characters() {
         Foo foo = new Foo(" p  w ");
 
         assertThat(validator.validate(foo)).isEmpty();
     }
 
     @Test
-    void null_value_password() {
+    void null_value() {
         Foo foo = new Foo(null);
 
         Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
@@ -45,7 +45,7 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void too_short_password() {
+    void too_short() {
         Foo foo = new Foo("foo");
 
         Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
@@ -56,7 +56,7 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void only_spaces_password() {
+    void only_spaces() {
         Foo foo = new Foo("          ");
 
         Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
@@ -67,7 +67,7 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void too_long_password() {
+    void too_long() {
         Foo foo = new Foo("13_chars_pass");
 
         Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
@@ -75,6 +75,17 @@ class PasswordValidatorTest {
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
                 .isEqualTo("Password length must be between 6 and 12 but was: 13");
+    }
+
+    @Test
+    void to_short_with_one_char_and_whitespace() {
+        Foo foo = new Foo("  2  ");
+
+        Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
+
+        assertThat(constraintViolations).hasSize(1);
+        assertThat(constraintViolations.iterator().next().getMessage())
+                .isEqualTo("Password length must be between 6 and 12 but was: 5");
     }
 
     private class Foo {
