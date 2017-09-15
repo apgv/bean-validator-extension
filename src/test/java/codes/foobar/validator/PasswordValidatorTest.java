@@ -34,11 +34,12 @@ class PasswordValidatorTest {
         }
 
         Foo foo = new Foo("passwd");
+        String causeMessage = "Parameter payload is required to contain interface codes.foobar.validator.NoLogging";
 
         assertThatThrownBy(() -> validator.validate(foo))
                 .isInstanceOf(ValidationException.class)
                 .hasCauseExactlyInstanceOf(IllegalArgumentException.class)
-                .withFailMessage("Require payload of type %s NoLogging.class");
+                .hasStackTraceContaining(causeMessage);
     }
 
     @Test

@@ -16,7 +16,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     @Override
     public void initialize(Password constraintAnnotation) {
         if (requiredPayloadIsMissing(constraintAnnotation)) {
-            throw new IllegalArgumentException(format("Require payload of type %s", NoLogging.class));
+            throw new IllegalArgumentException(format("Parameter payload is required to contain %s", NoLogging.class));
         }
 
         min = constraintAnnotation.min();
