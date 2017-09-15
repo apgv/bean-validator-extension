@@ -3,7 +3,7 @@
 Password validator with custom validation message hiding the actual password value from the error message.
 
 The payload parameter `NoLogging.class` is intended to be used by a framework to exclude the value failing validation
-from being logged. The value returned from `javax.validation.ConstraintViolation.getInvalidValue()`.
+from being logged – that is the value returned from `javax.validation.ConstraintViolation.getInvalidValue()`.
 
 ## Usage
 
