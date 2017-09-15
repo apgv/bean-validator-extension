@@ -5,6 +5,9 @@ import org.hibernate.validator.constraintvalidation.HibernateConstraintValidator
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
+
 public class PasswordValidator implements ConstraintValidator<Password, String> {
 
     private int min;
@@ -12,6 +15,10 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     @Override
     public void initialize(Password constraintAnnotation) {
+        if (requiredPayloadIsMissing(constraintAnnotation)) {
+            throw new IllegalArgumentException(format("Require payload of type %s", NoLogging.class));
+        }
+
         min = constraintAnnotation.min();
         max = constraintAnnotation.max();
     }
@@ -34,6 +41,11 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         }
 
         return isValid;
+    }
+
+    private boolean requiredPayloadIsMissing(Password constraintAnnotation) {
+        return stream(constraintAnnotation.payload())
+                .noneMatch(aClass -> aClass.equals(NoLogging.class));
     }
 
     private boolean isNotBlank(String value) {

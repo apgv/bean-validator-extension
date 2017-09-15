@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
+import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 
 class PasswordValidatorTest {
 
@@ -20,24 +22,44 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void valid() {
+    void require_payload_is_set() {
+        class Foo {
+
+            @Password
+            private String password;
+
+            private Foo(String password) {
+                this.password = password;
+            }
+        }
+
         Foo foo = new Foo("passwd");
 
-        assertThat(validator.validate(foo)).isEmpty();
+        assertThatThrownBy(() -> validator.validate(foo))
+                .isInstanceOf(ValidationException.class)
+                .hasCauseExactlyInstanceOf(IllegalArgumentException.class)
+                .withFailMessage("Require payload of type %s NoLogging.class");
+    }
+
+    @Test
+    void valid() {
+        Bar bar = new Bar("passwd");
+
+        assertThat(validator.validate(bar)).isEmpty();
     }
 
     @Test
     void valid_with_many_spaces_characters() {
-        Foo foo = new Foo(" p  w ");
+        Bar bar = new Bar(" p  w ");
 
-        assertThat(validator.validate(foo)).isEmpty();
+        assertThat(validator.validate(bar)).isEmpty();
     }
 
     @Test
     void null_value() {
-        Foo foo = new Foo(null);
+        Bar bar = new Bar(null);
 
-        Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
+        Set<ConstraintViolation<Bar>> constraintViolations = validator.validate(bar);
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
@@ -46,9 +68,9 @@ class PasswordValidatorTest {
 
     @Test
     void too_short() {
-        Foo foo = new Foo("foo");
+        Bar bar = new Bar("foo");
 
-        Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
+        Set<ConstraintViolation<Bar>> constraintViolations = validator.validate(bar);
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
@@ -57,9 +79,9 @@ class PasswordValidatorTest {
 
     @Test
     void only_spaces() {
-        Foo foo = new Foo("          ");
+        Bar bar = new Bar("          ");
 
-        Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
+        Set<ConstraintViolation<Bar>> constraintViolations = validator.validate(bar);
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
@@ -68,9 +90,9 @@ class PasswordValidatorTest {
 
     @Test
     void too_long() {
-        Foo foo = new Foo("13_chars_pass");
+        Bar bar = new Bar("13_chars_pass");
 
-        Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
+        Set<ConstraintViolation<Bar>> constraintViolations = validator.validate(bar);
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
@@ -79,21 +101,21 @@ class PasswordValidatorTest {
 
     @Test
     void to_short_with_one_char_and_whitespace() {
-        Foo foo = new Foo("  2  ");
+        Bar bar = new Bar("  2  ");
 
-        Set<ConstraintViolation<Foo>> constraintViolations = validator.validate(foo);
+        Set<ConstraintViolation<Bar>> constraintViolations = validator.validate(bar);
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
                 .isEqualTo("Password length must be between 6 and 12 but was: 5");
     }
 
-    private class Foo {
+    private class Bar {
 
-        @Password(min = 6, max = 12)
+        @Password(min = 6, max = 12, payload = NoLogging.class)
         private String password;
 
-        private Foo(String password) {
+        private Bar(String password) {
             this.password = password;
         }
     }
