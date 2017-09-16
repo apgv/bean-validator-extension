@@ -22,7 +22,7 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void require_payload_is_set() {
+    void validate_payload_contains_required_content() {
         class Foo {
 
             @Password
@@ -35,6 +35,65 @@ class PasswordValidatorTest {
 
         Foo foo = new Foo("passwd");
         String causeMessage = "Parameter payload is required to contain interface codes.foobar.validator.NoLogging";
+
+        assertThatThrownBy(() -> validator.validate(foo))
+                .isInstanceOf(ValidationException.class)
+                .hasCauseExactlyInstanceOf(IllegalArgumentException.class)
+                .hasStackTraceContaining(causeMessage);
+    }
+
+    @Test
+    void validate_min_parameter_is_greater_than_minimum_password_length() {
+        class Foo {
+
+            @Password(min = 3, payload = NoLogging.class)
+            private String password;
+
+            private Foo(String password) {
+                this.password = password;
+            }
+        }
+
+        Foo foo = new Foo("passwd");
+        String causeMessage = "Parameter min must be at least 4";
+
+        assertThatThrownBy(() -> validator.validate(foo))
+                .isInstanceOf(ValidationException.class)
+                .hasCauseExactlyInstanceOf(IllegalArgumentException.class)
+                .hasStackTraceContaining(causeMessage);
+    }
+
+    @Test
+    void validate_min_parameter_is_greater_or_equal_to_minimum_password_length() {
+        class Foo {
+
+            @Password(min = 4, payload = NoLogging.class)
+            private String password;
+
+            private Foo(String password) {
+                this.password = password;
+            }
+        }
+
+        Foo foo = new Foo("passwd");
+
+        assertThat(validator.validate(foo)).isEmpty();
+    }
+
+    @Test
+    void validate_max_parameter_is_greater_than_min() {
+        class Foo {
+
+            @Password(min = 6, max = 4, payload = NoLogging.class)
+            private String password;
+
+            private Foo(String password) {
+                this.password = password;
+            }
+        }
+
+        Foo foo = new Foo("passwd");
+        String causeMessage = "Parameter max must be greather or equal to min";
 
         assertThatThrownBy(() -> validator.validate(foo))
                 .isInstanceOf(ValidationException.class)
@@ -109,6 +168,13 @@ class PasswordValidatorTest {
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
                 .isEqualTo("Password length must be between 6 and 12 but was: 5");
+    }
+
+    @Test
+    void length_equal_to_max() {
+        Bar bar = new Bar("_max_length_");
+
+        assertThat(validator.validate(bar)).isEmpty();
     }
 
     private class Bar {
