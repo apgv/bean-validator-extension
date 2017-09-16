@@ -26,10 +26,7 @@ class PasswordValidatorTest {
         class Foo {
 
             @Password
-            private String password;
-
             private Foo(String password) {
-                this.password = password;
             }
         }
 
@@ -47,10 +44,7 @@ class PasswordValidatorTest {
         class Foo {
 
             @Password(min = 3, payload = NoLogging.class)
-            private String password;
-
             private Foo(String password) {
-                this.password = password;
             }
         }
 
@@ -68,10 +62,7 @@ class PasswordValidatorTest {
         class Foo {
 
             @Password(min = 4, payload = NoLogging.class)
-            private String password;
-
             private Foo(String password) {
-                this.password = password;
             }
         }
 
@@ -85,10 +76,7 @@ class PasswordValidatorTest {
         class Foo {
 
             @Password(min = 6, max = 4, payload = NoLogging.class)
-            private String password;
-
             private Foo(String password) {
-                this.password = password;
             }
         }
 
@@ -109,7 +97,7 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void valid_with_many_spaces_characters() {
+    void valid_with_whitespace_characters() {
         Bar bar = new Bar(" p  w ");
 
         assertThat(validator.validate(bar)).isEmpty();
@@ -138,7 +126,7 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void only_spaces() {
+    void whitespace_only() {
         Bar bar = new Bar("          ");
 
         Set<ConstraintViolation<Bar>> constraintViolations = validator.validate(bar);
