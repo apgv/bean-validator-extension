@@ -7,7 +7,7 @@ from being logged – that is the value returned from `javax.validation.Constrai
 
 ## Usage
 
-- Parameter `min` is optional. Defaults to 10. 
+- Parameter `min` is optional. Defaults to 10. Absolute minimum password length is 4. 
 - Parameter `max` is optional. Defaults to 128.
 - Parameter `payload` is required and is expected to be `NoLogging.class` or else an exception is thrown.
 
