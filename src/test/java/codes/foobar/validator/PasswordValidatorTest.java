@@ -26,7 +26,10 @@ class PasswordValidatorTest {
         class Foo {
 
             @Password
+            private String password;
+
             private Foo(String password) {
+                this.password = password;
             }
         }
 
@@ -44,7 +47,10 @@ class PasswordValidatorTest {
         class Foo {
 
             @Password(min = 3, payload = NoLogging.class)
+            private String password;
+
             private Foo(String password) {
+                this.password = password;
             }
         }
 
@@ -76,7 +82,10 @@ class PasswordValidatorTest {
         class Foo {
 
             @Password(min = 6, max = 4, payload = NoLogging.class)
+            private String password;
+
             private Foo(String password) {
+                this.password = password;
             }
         }
 
