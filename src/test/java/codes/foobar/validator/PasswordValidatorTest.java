@@ -78,7 +78,7 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void validate_max_parameter_is_greater_than_min() {
+    void validate_max_parameter_is_less_than_min() {
         class Foo {
 
             @Password(min = 6, max = 4, payload = NoLogging.class)
