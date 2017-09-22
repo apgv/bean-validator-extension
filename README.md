@@ -38,5 +38,5 @@ public class Foo {
 #### Invalid length password
 Password length must be between 6 and 12 but was: 3
 
-#### Password is null
-Password length must be between 6 and 12 but was: null
+#### Empty password
+Password length must be between 6 and 12 but was: 0
