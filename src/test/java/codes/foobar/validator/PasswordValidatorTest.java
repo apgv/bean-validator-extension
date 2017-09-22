@@ -113,14 +113,10 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void null_value() {
+    void null_value_is_valid() {
         Bar bar = new Bar(null);
 
-        Set<ConstraintViolation<Bar>> constraintViolations = validator.validate(bar);
-
-        assertThat(constraintViolations).hasSize(1);
-        assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("Password length must be between 6 and 12 but was: null");
+        assertThat(validator.validate(bar)).isEmpty();
     }
 
     @Test

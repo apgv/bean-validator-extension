@@ -26,7 +26,11 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        boolean isValid = isNotBlank(value) &&
+        if (value == null) {
+            return true;
+        }
+
+        boolean isValid = isNotEmpty(value) &&
                 value.length() >= min &&
                 value.length() <= max;
 
@@ -58,15 +62,15 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         }
     }
 
-    private boolean isNotBlank(String value) {
-        return value != null && value.trim().length() > 0;
+    private boolean isNotEmpty(String value) {
+        return !value.trim().isEmpty();
     }
 
     private String actual(String value) {
-        if (isNotBlank(value)) {
+        if (isNotEmpty(value)) {
             return String.valueOf(value.length());
         } else {
-            return value == null ? "null" : "0";
+            return "0";
         }
     }
 
